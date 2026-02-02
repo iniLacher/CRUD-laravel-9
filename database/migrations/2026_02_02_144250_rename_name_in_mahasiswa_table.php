@@ -13,10 +13,8 @@ return new class extends Migration
      */
     public function up()
     {
-        Schema::create('mahasiswa', function (Blueprint $table) {
-            $table->bigInteger('nim')->unique();
-            $table->string('nama');
-            $table->string('jurusan');
+        Schema::table('mahasiswa', function (Blueprint $table) {
+            $table->renameColumn('name', 'nama');
         });
     }
 
@@ -27,6 +25,8 @@ return new class extends Migration
      */
     public function down()
     {
-        Schema::dropIfExists('mahasiswa');
+        Schema::table('mahasiswa', function (Blueprint $table) {
+            $table->renameColumn('nama', 'name');
+        });
     }
 };

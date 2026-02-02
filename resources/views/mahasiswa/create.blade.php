@@ -1,7 +1,8 @@
 @extends('layout.template')
 @section('konten')
         <!-- START FORM -->
-       <form action='' method='post'>
+       <form action='{{url('mahasiswa')}}' method='post'>
+        @csrf
         <div class="my-3 p-3 bg-body rounded shadow-sm">
             <div class="mb-3 row">
                 <label for="nim" class="col-sm-2 col-form-label">NIM</label>
