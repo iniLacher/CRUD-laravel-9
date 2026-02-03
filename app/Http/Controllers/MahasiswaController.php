@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Models\mahasiswa;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Session;
 
 class MahasiswaController extends Controller
 {
@@ -14,7 +15,8 @@ class MahasiswaController extends Controller
      */
     public function index()
     {
-        return view('mahasiswa.index');
+        $data = mahasiswa::orderBy('nim', 'desc')->paginate(3);
+        return view('mahasiswa.index')->with('data', $data);
     }
 
     /**
@@ -35,11 +37,21 @@ class MahasiswaController extends Controller
      */
     public function store(Request $request)
     {
+        Session::flash('nim', $request->nim);
+        Session::flash('nama', $request->nama);
+        Session::flash('jurusan', $request->jurusan);
+
         $request->validate([
             'nim' => 'required|unique:mahasiswa,nim|numeric',
             'nama' => 'required',
             'jurusan' => 'required'
-        ]);
+        ],[
+            'nim.required'   => 'NIM Tidak Boleh Kosong',
+            'nim.unique' => 'NIM Sudah Ada',
+            'nim.numeric' => 'NIM Harus Angka, Tidak Boleh Huruf',
+            'nama.required'  => 'Nama Tidak Boleh Kosong',
+            'jurusan.required' => 'Jurusan Tidak Boleh Kosong'
+        ]); 
         $data = [
             'nim' => $request->nim,
             'nama' => $request->nama,
@@ -47,7 +59,7 @@ class MahasiswaController extends Controller
         ];
 
         mahasiswa::create($data);
-        return 'Data Berhasil Disimpan';
+        return redirect()->to('mahasiswa')->with('success', 'Data Berhasil Disimpan');
     }
 
     /**
@@ -69,7 +81,7 @@ class MahasiswaController extends Controller
      */
     public function edit($id)
     {
-        //
+        return 'huuy' . $id;
     }
 
     /**
@@ -81,7 +93,7 @@ class MahasiswaController extends Controller
      */
     public function update(Request $request, $id)
     {
-        //
+        
     }
 
     /**
