@@ -13,9 +13,16 @@ class MahasiswaController extends Controller
      *
      * @return \Illuminate\Http\Response
      */
-    public function index()
+    public function index(Request $request)
     {
-        $data = mahasiswa::orderBy('nim', 'desc')->paginate(3);
+        $katakunci = $request->katakunci;
+        $jumlahBaris = 10;
+        if(strlen($katakunci)){
+            $data = Mahasiswa::where('nim', 'like', '%' . $katakunci . '%')->orWhere('nama', 'like', '%' . $katakunci . '%')->orWhere('jurusan', 'like', '%' . $katakunci . '%')->paginate($jumlahBaris);
+        } else {
+            $data = mahasiswa::orderBy('nim', 'desc')->paginate($jumlahBaris);
+        }
+
         return view('mahasiswa.index')->with('data', $data);
     }
 
@@ -81,7 +88,8 @@ class MahasiswaController extends Controller
      */
     public function edit($id)
     {
-        return 'huuy' . $id;
+        $data = mahasiswa::where('nim', $id)->first();
+        return view('mahasiswa.edit')->with('data', $data);
     }
 
     /**
@@ -93,7 +101,16 @@ class MahasiswaController extends Controller
      */
     public function update(Request $request, $id)
     {
-        
+        $request->validate([
+            'nama' => 'required',
+            'jurusan' => 'required'
+        ]);
+        $data = [
+            'nama' => $request->nama,
+            'jurusan' => $request->jurusan
+        ];
+        Mahasiswa::where('nim', $id)->update($data);
+        return redirect()->to('mahasiswa')->with('success', 'Data Berhasil Diubah');
     }
 
     /**
@@ -104,6 +121,8 @@ class MahasiswaController extends Controller
      */
     public function destroy($id)
     {
-        //
+        Mahasiswa::where('nim', $id)->delete();
+        return redirect()->back()->with('success', 'Data Berhasil Dihapus');
+
     }
 }

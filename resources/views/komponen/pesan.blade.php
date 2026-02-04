@@ -5,6 +5,13 @@
             </div>
         </div>
  @endif
+@if (Session::has('gagal'))
+        <div class="mt-3">
+            <div class="alert alert-warning">
+                {{ Session::get('warning') }}
+            </div>
+        </div>
+ @endif
  
  @if ($errors->any())
     <div class="pt-3">
